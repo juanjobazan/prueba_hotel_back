@@ -17,6 +17,9 @@ const UsersSchema = new Schema({
     role:{
         type:String,
         default:'user'
+    },
+    idCartServicio:{
+        type:String
     }
 })
 

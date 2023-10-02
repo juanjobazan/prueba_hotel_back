@@ -1,21 +1,20 @@
 const jwt = require('jsonwebtoken')
-const UsersModel = require('../models/users')
 
-module.exports =async (req,res,nex) =>{
-   try {
-
-    const token = req.header('auth').replace('Bearer','')
-    const verify= jwt.verify(token, process.env.SECRET_KEY)
-    const userExist = await UsersModel.findOne({_id: verify.user.idUser})
-
-    if(userExist){
-        req.idUser = userExist._id
-        nex()
-    }else{
-        return res.status(400).json({msg:'Problemas con el Token'})
+module.exports = (role) => async (req, res, next) => {
+  try {
+    const token = req.header('auth').replace('Bearer ', '')
+    const verify = jwt.verify(token, process.env.SECRET_KEY)
+    console.log(verify)
+    if (verify && verify.user.role === role) {
+      req.idUser = verify.user.id
+      next()
+    } else if (Array.isArray(role) && role.includes(verify.user.role)) {
+      req.idUser = verify.user.id
+      next()
+    } else {
+      res.status(401).json({ msg: 'No estas autorizado' })
     }
-   } catch (error) {
-    console.log(error)
-    return res.status(500).json({msg:'Problemas con el Token', error})
-   }
+  } catch (error) {
+    res.status(500).json({ msg: 'ERR:Token', error })
+  }
 }
