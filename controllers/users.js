@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken')
 const UsersModel = require('../models/users')
 const { validationResult } = require('express-validator')
 const CarServicioModel = require('../models/cartServicio')
+const ResevaModel = require('../models/reserva')
 
 
 const getAllUser = async (req, res) => {
@@ -46,10 +47,13 @@ const createUser = async (req, res) => {
 
         
         const newUser = new UsersModel(req.body)
-        const newCartServicio = new CarServicioModel()  
+        const newCartServicio = new CarServicioModel()
+        const newReserva = new ResevaModel()  
 
         newUser.idCartServicio = newCartServicio._id
         newCartServicio.idUser = newUser._id
+        newUser.idReserva = newReserva._id
+        newReserva.idUser= newUser._id
 
 
         const objUser = {
@@ -60,6 +64,7 @@ const createUser = async (req, res) => {
 
         await newUser.save()
         await newCartServicio.save()
+        await newReserva.save()
         res.status(201).json({ msg: 'Usuario Creado con Exito', newUser })
     } catch (error) {
         res.status(500).json(error)
