@@ -26,6 +26,14 @@ const HabitacionesSchema  = new Schema({
     imagen:{
         type:String,
         default:''
+    },
+    ingreso:{
+        type:String,
+        default:''
+    },
+    salida:{
+        type:String,
+        default:''
     }
 
 })
