@@ -1,5 +1,7 @@
 const ResevaModel = require('../models/reserva')
 const HabitacionesModel = require('../models/habitaciones')
+const dayjs = require('dayjs')
+
 
 const getReservas = async (req, res) => {
     try {
@@ -14,37 +16,59 @@ const addReserva = async (req, res) => {
 
     try {
 
-        const {idRes,idHab}=req.params
+        const { idRes, idHab } = req.params
+        const reservas = await ResevaModel.findOne({ _id: req.params.idRes })
+        const habitacionesReserva = reservas.habitaciones
+        const findHabitacion = habitacionesReserva.find(obj => obj._id == idHab)
+        const ingresoBase = findHabitacion.ingreso
+        const salidaBase = findHabitacion.salida
 
-        const reservas = await ResevaModel.findOne({id: req.params.idRes})
-        const habitacionesExi = await ResevaModel.findOne({habitaciones:{$elemMatch:{_id: idRes}}})
-        const prueba = await ResevaModel.find({habitaciones:[{_id:{$eq:idRes} }]})
-       
-        console.log(prueba)
-        console.log(idRes)
-        console.log(idHab)
+        const { ingreso, salida } = req.body
+        const fechaIngreso = (ingreso)
+        const fechaSalida = (salida)
 
-      
-     
-     
-        /* const fechas = await HabitacionesModel.findByIdAndUpdate({ _id: req.params.idHab }, req.body, { new: true })
-          const reserva = await ResevaModel.findOne({ _id: req.params.idRes })
-          const habitacion = await HabitacionesModel.findOne({ _id: req.params.idHab })
-          
-  
-         
-         
-      
-  
-          reserva.habitaciones.push(habitacion)
-         
-  
-          await reserva.save()
-       
-        
-  
-  
-          res.status(200).json({ msg: 'Habitacion Reservada Correctamente', reserva, status: 200 }) */
+        if (fechaIngreso < fechaSalida) {
+            if (!findHabitacion) {
+                const fechas = await HabitacionesModel.findByIdAndUpdate({ _id: req.params.idHab }, req.body, { new: true })
+                const reserva = await ResevaModel.findOne({ _id: req.params.idRes })
+                const habitacion = await HabitacionesModel.findOne({ _id: req.params.idHab })
+
+                reserva.habitaciones.push(habitacion)
+
+                await reserva.save()
+
+
+             return   res.status(200).json({ msg: 'Habitacion Reservada Correctamente', reserva, status: 200 })
+
+               
+
+            } else {
+                if (!(fechaIngreso > ingresoBase && fechaIngreso < salidaBase) && !(fechaSalida > ingresoBase && fechaIngreso < salidaBase)) {
+                    const fechas = await HabitacionesModel.findByIdAndUpdate({ _id: req.params.idHab }, req.body, { new: true })
+                    const reserva = await ResevaModel.findOne({ _id: req.params.idRes })
+                    const habitacion = await HabitacionesModel.findOne({ _id: req.params.idHab })
+    
+                    reserva.habitaciones.push(habitacion)
+    
+                    await reserva.save()
+    
+    
+                return    res.status(200).json({ msg: 'Habitacion Reservada Correctamente', reserva, status: 200 })
+                   
+                } else {
+                    return res.status(400).json({ mag: 'Habitacion No disponible' })
+                }
+
+             
+            }
+            
+
+        } else if (fechaIngreso > fechaSalida) {
+            return res.status(400).json({ mag: 'La fecha de Ingreso No puede ser Superior a la Salida' })
+        } else {
+            return res.status(400).json({ mag: 'La fecha de Ingreso No puede ser Igual a la salida' })
+        }
+
 
 
     } catch (error) {
