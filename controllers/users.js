@@ -2,6 +2,8 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const UsersModel = require('../models/users')
 const { validationResult } = require('express-validator')
+const CarServicioModel = require('../models/cartServicio')
+const ResevaModel = require('../models/reserva')
 
 
 const getAllUser = async (req, res) => {
@@ -43,15 +45,26 @@ const createUser = async (req, res) => {
         let salt = bcrypt.genSaltSync(10);
         req.body.password = bcrypt.hashSync(password, salt);
 
+        
+        const newUser = new UsersModel(req.body)
+        const newCartServicio = new CarServicioModel()
+        const newReserva = new ResevaModel()  
+
+        newUser.idCartServicio = newCartServicio._id
+        newCartServicio.idUser = newUser._id
+        newUser.idReserva = newReserva._id
+        newReserva.idUser= newUser._id
+
 
         const objUser = {
             user,
             password: req.body.password,
-            email
+            email,
         }
 
-        const newUser = new UsersModel(objUser)
         await newUser.save()
+        await newCartServicio.save()
+        await newReserva.save()
         res.status(201).json({ msg: 'Usuario Creado con Exito', newUser })
     } catch (error) {
         res.status(500).json(error)
