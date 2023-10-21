@@ -7,6 +7,6 @@ const multer = require('../utils/multer');
 const router=express.Router()
 const path = require('path');
 
-router.post('/:idHab',createImage,multer.single('image'))
+router.post('/:idHab',multer.single('image'),createImage)
 
 module.exports = router

@@ -3,6 +3,7 @@ const cloudinary = require('../utils/cloudinaryConfig')
 const HabitacionesModel = require("../models/habitaciones")
 
 const createImage = async (req, res) => {
+    console.log(req.file.path)
     const habitacion = await HabitacionesModel.findOne({ _id: req.params.idHab })
     const results = await cloudinary.uploader.upload(req.file.path);
     const urlImage = results.secure_url

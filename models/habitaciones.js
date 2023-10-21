@@ -23,18 +23,15 @@ const HabitacionesSchema  = new Schema({
         type:Number,
         required:true
     },
+    destacado:{
+        type:Boolean,
+        default:false
+    },
     imagen:{
         type:String,
         default:''
     },
-    ingreso:{
-        type:String,
-        default:''
-    },
-    salida:{
-        type:String,
-        default:''
-    }
+    reservas: []
 
 })
 
