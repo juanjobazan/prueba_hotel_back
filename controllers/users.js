@@ -116,7 +116,7 @@ const userLogin = async (req, res) => {
 
         if (passCheck) {
             const token = jwt.sign(payload, 'hotel')
-            res.status(200).json({ token })
+            res.status(200).json({ token, role:userExist.role,id:userExist._id })
         }else{
             res.status(400).json({msg:'Usuario y/o Contraseña Incorrecta'})
         }

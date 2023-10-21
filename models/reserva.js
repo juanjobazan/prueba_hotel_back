@@ -4,14 +4,7 @@ const ReservaSchema = new Schema({
     idUser: {
         type: String
     },
-    ingreso: {
-        type: String,
-        
-    },
-    salida: {
-        type: String,
-        
-    },
+    
    
     habitaciones: []
 })
