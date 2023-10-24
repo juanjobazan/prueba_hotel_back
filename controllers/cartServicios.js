@@ -25,12 +25,12 @@ const addServicioCart = async (req, res) => {
             }
         }
         if (servArray.length > 0) {
-            return res.status(400).json({ msg: 'el producto ya existe en el carrito' })
+            return res.status(400).json({ msg: 'el Servicio ya existe en el carrito' })
         }
         cartServicio.servicios.push(servicio)
 
         await cartServicio.save()
-        res.status(200).json({ msg: 'Producto Cargado correctamente', cartServicio, status: 200 })
+        res.status(200).json({ msg: 'Servicio Cargado correctamente', cartServicio, status: 200 })
 
     } catch (error) {
         res.status(500).json(error)
