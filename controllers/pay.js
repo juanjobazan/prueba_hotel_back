@@ -23,10 +23,10 @@ const postPay = async (req, res) => {
                 //failure
             }
         }) 
-        console.log(result)
+       
         res.send('ok')
     } catch (error) {
-        console.log(error)
+       
     }
 }
 

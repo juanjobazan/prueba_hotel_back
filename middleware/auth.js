@@ -4,7 +4,7 @@ module.exports = (role) => async (req, res, next) => {
   try {
     const token = req.header('auth').replace('Bearer ', '')
     const verify = jwt.verify(token, process.env.SECRET_KEY)
-    console.log(verify)
+   
     if (verify && verify.user.role === role) {
       req.idUser = verify.user.id
       next()
